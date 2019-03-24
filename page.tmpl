@@ -1,0 +1,15 @@
+<html>
+<head>
+  <title>Recent new brew updates</title>
+  <style>
+    body {
+          font-size: 300%;
+    }
+  </style>
+</head>
+<body>
+  {%- for dct in my_list %}
+  {{loop.index}}. <a href='{{dct['homepage']}}' target="_blank" >{{dct['name']}}: {{dct['desc']}}</a><br/>
+  {%- endfor %}
+</body>
+</html>
