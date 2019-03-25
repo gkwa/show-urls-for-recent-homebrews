@@ -47,7 +47,9 @@ parser.add_argument(
 args = parser.parse_args()
 
 if args.debug:
-    logging.basicConfig(level=logging.DEBUG)
+    format = "%(asctime)s: %(message)s"
+    logging.basicConfig(format=format,
+                        level=logging.DEBUG, datefmt="%H:%M:%S")
 
 my_env = os.environ.copy()
 my_env["HOME"] = ""  # hide $HOME/.gitconfig from git
@@ -55,7 +57,6 @@ my_env["PATH"] = f'/usr/local/bin:{my_env["PATH"]}'
 
 cmd = ['git', 'log', '--format=%h',
        f'--since={eval(args.since_seconds)}.seconds.ago']
-logging.debug(f"{' '.join(cmd)}")
 process = Popen(
     cmd,
     cwd=HOMEBREW_FORMULA_DIR,
@@ -67,7 +68,7 @@ process = Popen(
 stdout, stderr = process.communicate()
 shas = stdout.split('\n')
 shas.remove('')
-logging.debug(f"{' '.join(shas)}")
+logging.debug(f"{' '.join(cmd)} output: {' '.join(shas)}")
 
 if not shas:
     sys.exit(0)
