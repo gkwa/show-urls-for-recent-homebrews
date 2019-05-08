@@ -97,10 +97,15 @@ process = Popen(
     env=my_env,
     encoding='utf8')
 stdout, stderr = process.communicate()
-shas = [re.sub(r'Formula/(.*)\.rb', r'\1', x, flags=re.I)
-        for x in stdout.split('\n') if x != '']
 
-cmd = [BREW_PATH, 'info', '--json'] + shas
+pkg_re = re.compile(r"""
+(?:Formula|Aliases)/   # filter on file paths that include aliases and formula only
+([\_\-\w]+)            # package name must only have these characters
+""", flags=re.I | re.VERBOSE)
+pkgs = [m.group(1) for m in (pkg_re.search(pkg)
+                             for pkg in stdout.split('\n')) if m]
+
+cmd = [BREW_PATH, 'info', '--json'] + pkgs
 logging.debug(f"{' '.join(cmd)}")
 process = Popen(
     cmd,
