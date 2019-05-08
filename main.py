@@ -82,6 +82,7 @@ cmd = [
     GIT_PATH,
     f'--git-dir={HOMEBREW_FORMULA_GIT_DIR}',
     'diff',
+    '--diff-filter=d',  # exclude deleted packages
     '--name-only',
     f'{shas[-1]}..master',
 ]
