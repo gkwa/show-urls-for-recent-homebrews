@@ -22,14 +22,20 @@ TERMINAL_NOTIFIER = '/usr/local/bin/terminal-notifier'
 
 parser = argparse.ArgumentParser()
 
+
+def convert_to_seconds(s):
+    seconds_per_unit = {"s": 1, "m": 60, "h": 3600, "d": 86400, "w": 604800}
+    return int(s[:-1]) * seconds_per_unit[s[-1]]
+
+
 parser.add_argument(
     "-s",
-    "--since-seconds",
+    "--since",
     type=str,
     const=1,
-    default=str(24 * 60 * 60),
+    default='1d',
     nargs='?',
-    help="show changes since this many seconds ago. eg for changes within the last  2 days, use -s '2*24*60*60'")
+    help="show changes since this many seconds ago. eg for changes within the last 2 days, use -s 2d")
 
 parser.add_argument(
     "-n",
@@ -56,7 +62,7 @@ my_env["HOME"] = ""  # hide $HOME/.gitconfig from git
 my_env["PATH"] = f'/usr/local/bin:{my_env["PATH"]}'
 
 cmd = ['git', 'log', '--format=%h',
-       f'--since={eval(args.since_seconds)}.seconds.ago']
+       f'--since={convert_to_seconds(args.since)}.seconds.ago']
 process = Popen(
     cmd,
     cwd=HOMEBREW_FORMULA_DIR,
