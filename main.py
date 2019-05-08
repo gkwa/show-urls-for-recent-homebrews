@@ -73,7 +73,12 @@ logging.debug(f"{' '.join(cmd)} output: {' '.join(shas)}")
 if not shas:
     sys.exit(0)
 
-cmd = [GIT_PATH, 'diff', '--name-only', f'{shas[-1]}..master']
+cmd = [
+    GIT_PATH,
+    'diff',
+    '--name-only',
+    f'{shas[-1]}..master',
+]
 logging.debug(f"{' '.join(cmd)}")
 process = Popen(
     cmd,
@@ -107,7 +112,15 @@ with open(TEMPLATE_OUTPUT, 'w') as html:
     html.write(output)
 
 if not args.no_notify:
-    cmd = [TERMINAL_NOTIFIER, '-title', 'Homebrew', '-message', 'Homebrew updates', '-open', f'file://{TEMPLATE_OUTPUT}']
+    cmd = [
+        TERMINAL_NOTIFIER,
+        '-title',
+        'Homebrew',
+        '-message',
+        'Homebrew updates',
+        '-open',
+        f'file://{TEMPLATE_OUTPUT}',
+    ]
     process = Popen(
         cmd,
         cwd=HOMEBREW_FORMULA_DIR,
