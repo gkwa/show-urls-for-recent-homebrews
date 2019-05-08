@@ -13,7 +13,7 @@ import jinja2
 
 BREW_PATH = '/usr/local/bin/brew'
 GIT_PATH = '/usr/local/bin/git'
-HOMEBREW_FORMULA_DIR = '/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/Formula'
+HOMEBREW_FORMULA_GIT_DIR = '/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/.git'
 TEMPLATE_DIR = os.path.dirname(os.path.realpath(__file__))
 TEMPLATE_FILE = 'page.tmpl'
 TEMPLATE_OUTPUT = f'/tmp/show-urls-for-recent-homebrews-{time.strftime("%A-%-I%M%p", time.localtime())}.html'
@@ -61,11 +61,10 @@ my_env = os.environ.copy()
 my_env["HOME"] = ""  # hide $HOME/.gitconfig from git
 my_env["PATH"] = f'/usr/local/bin:{my_env["PATH"]}'
 
-cmd = ['git', 'log', '--format=%h',
+cmd = ['git', f'--git-dir={HOMEBREW_FORMULA_GIT_DIR}', 'log', '--format=%h',
        f'--since={convert_to_seconds(args.since)}.seconds.ago']
 process = Popen(
     cmd,
-    cwd=HOMEBREW_FORMULA_DIR,
     stdout=PIPE,
     stderr=PIPE,
     env=my_env,
@@ -81,6 +80,7 @@ if not shas:
 
 cmd = [
     GIT_PATH,
+    f'--git-dir={HOMEBREW_FORMULA_GIT_DIR}',
     'diff',
     '--name-only',
     f'{shas[-1]}..master',
@@ -88,7 +88,6 @@ cmd = [
 logging.debug(f"{' '.join(cmd)}")
 process = Popen(
     cmd,
-    cwd=HOMEBREW_FORMULA_DIR,
     stdout=PIPE,
     stderr=PIPE,
     env=my_env,
@@ -101,7 +100,6 @@ cmd = [BREW_PATH, 'info', '--json'] + shas
 logging.debug(f"{' '.join(cmd)}")
 process = Popen(
     cmd,
-    cwd=HOMEBREW_FORMULA_DIR,
     stdout=PIPE,
     stderr=PIPE,
     encoding='utf8')
@@ -129,7 +127,6 @@ if not args.no_notify:
     ]
     process = Popen(
         cmd,
-        cwd=HOMEBREW_FORMULA_DIR,
         stdout=PIPE,
         stderr=PIPE,
         encoding='utf8')
