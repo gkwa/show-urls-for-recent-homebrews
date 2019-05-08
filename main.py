@@ -11,6 +11,9 @@ from subprocess import PIPE, Popen
 
 import jinja2
 
+if sys.version_info[0] < 3:
+    raise Exception("Must be using Python 3")
+
 BREW_PATH = '/usr/local/bin/brew'
 GIT_PATH = '/usr/local/bin/git'
 HOMEBREW_FORMULA_GIT_DIR = '/usr/local/Homebrew/Library/Taps/homebrew/homebrew-core/.git'
