@@ -56,9 +56,7 @@ parser.add_argument(
 args = parser.parse_args()
 
 if args.debug:
-    format = "%(asctime)s: %(message)s"
-    logging.basicConfig(format=format,
-                        level=logging.DEBUG, datefmt="%H:%M:%S")
+    logging.basicConfig(level=logging.DEBUG)
 
 my_env = os.environ.copy()
 my_env["HOME"] = ""  # hide $HOME/.gitconfig from git
